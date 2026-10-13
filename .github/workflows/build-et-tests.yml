@@ -1,0 +1,28 @@
+# Intégration continue : à chaque envoi sur GitHub, le projet est compilé
+# et tous les tests unitaires sont lancés automatiquement.
+name: Compilation et tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restaurer les dépendances
+        run: dotnet restore
+
+      - name: Compiler
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Lancer les tests
+        run: dotnet test --no-build --configuration Release --verbosity normal
